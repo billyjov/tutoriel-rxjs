@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+
+  private subscription: Subscription = new Subscription();
 
   ngOnInit() {
 
@@ -18,12 +20,13 @@ export class AppComponent implements OnInit {
 
     const stream = new Observable(myObserver => {
       myObserver.next('Boite 1');
+      myObserver.error(new Error());
       myObserver.next('Boite 2');
-      myObserver.next('Boite 3');
       // for (let index = 0; index < 1000000; index++) {
       //   myObserver.next('Boite');
       // }
       myObserver.complete();
+      myObserver.next('Boite 3');
     });
 
     const subscription = stream.subscribe(
@@ -32,5 +35,31 @@ export class AppComponent implements OnInit {
       () => console.log('terminé...plus rien')
     );
 
+    subscription.unsubscribe();
+
+  }
+
+
+  public start(): void {
+    this.subscription.add(interval(1000).subscribe(
+      value => console.log('ma valeur: ', value),
+      error => console.error(error),
+      () => console.log('terminé')
+    ))
+
+    this.subscription.add(interval(1000).subscribe(
+      value => console.warn('=== ma valeur === : ', value),
+      error => console.error(error),
+      () => console.warn('=== terminé ===')
+    ))
+  }
+
+  public stop(): void {
+    this.subscription.unsubscribe();
+
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }
