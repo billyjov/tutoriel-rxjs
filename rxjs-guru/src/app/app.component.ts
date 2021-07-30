@@ -37,13 +37,33 @@ export class AppComponent implements OnInit, OnDestroy {
 
     subscription.unsubscribe();
 
-    of(1, 2, 3, 4).subscribe(console.log)
 
-    from([12, 13, 14, 15]).subscribe(
-      (item: number) => console.log(`ma valeur ${item}`),
-      (err: unknown) => console.error(err),
-      () => console.log('Termine')
-    )
+    // from([12, 13, 14, 15]).subscribe(
+    //   (item: number) => console.log(`ma valeur ${item}`),
+    //   (err: unknown) => console.error(err),
+    //   () => console.log('Termine')
+    // )
+
+    const double = (source: Observable<number>) =>
+      new Observable<number>((subscriber) => {
+
+        const subscription = source.subscribe({
+          next: (value) => subscriber.next(2 * value),
+          error: (err) => subscriber.error(err),
+          complete: () => subscriber.complete()
+        });
+
+        return () => {
+          subscription.unsubscribe();
+        }
+
+      })
+    of(1, 2, 3, 4)
+      .pipe(
+        double,
+        double
+      )
+      .subscribe(console.log)
   }
 
 
