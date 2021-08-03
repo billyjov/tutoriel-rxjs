@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, interval, Subscription, of, from } from 'rxjs';
-import { map,tap } from 'rxjs/operators';
+import { map, tap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
 
-    from([1, 2, 12, 13, 14,0, 15])
+    from([1, 2, 12, 13, 14, 0, 15])
       .pipe(
         tap(elem => console.log(elem)),
         map((elem: number) => {
@@ -25,13 +25,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
           return elem * 2;
         }),
-        map(item => item - 2)
+        map(item => item - 2),
+        take(2)
       )
       .subscribe(
-      (item: number) => console.log(`ma valeur ${item}`),
-      (err: unknown) => console.error(err),
-      () => console.log('Termine')
-    )
+        (item: number) => console.log(`ma valeur ${item}`),
+        (err: unknown) => console.error(err),
+        () => console.log('Termine')
+      )
 
 
   }
