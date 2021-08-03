@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, interval, Subscription, of, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map,tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +17,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     from([1, 2, 12, 13, 14,0, 15])
       .pipe(
+        tap(elem => console.log(elem)),
         map((elem: number) => {
           if (elem === 0) {
             throw new Error('zero erreur')
