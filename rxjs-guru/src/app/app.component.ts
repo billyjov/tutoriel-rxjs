@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, interval, Subscription, of, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,58 +13,26 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    const observer = {
-      next: (item: unknown) => console.log(`Une boite arrive ${item}`),
-      error: (err: unknown) => console.log(`Oups il ya une erreur ${err}`),
-      complete: () => console.log('terminé...plus rien')
-    };
-
-    const stream = new Observable(myObserver => {
-      myObserver.next('Boite 1');
-      myObserver.error(new Error());
-      myObserver.next('Boite 2');
-      // for (let index = 0; index < 1000000; index++) {
-      //   myObserver.next('Boite');
-      // }
-      myObserver.complete();
-      myObserver.next('Boite 3');
-    });
-
-    const subscription = stream.subscribe(
-      item => console.log(`Une boite arrive ${item}`),
-      err => console.log(`Oups il ya une erreur ${err}`),
-      () => console.log('terminé...plus rien')
-    );
-
-    subscription.unsubscribe();
 
 
-    // from([12, 13, 14, 15]).subscribe(
-    //   (item: number) => console.log(`ma valeur ${item}`),
-    //   (err: unknown) => console.error(err),
-    //   () => console.log('Termine')
-    // )
-
-    const double = (source: Observable<number>) =>
-      new Observable<number>((subscriber) => {
-
-        const subscription = source.subscribe({
-          next: (value) => subscriber.next(2 * value),
-          error: (err) => subscriber.error(err),
-          complete: () => subscriber.complete()
-        });
-
-        return () => {
-          subscription.unsubscribe();
-        }
-
-      })
-    of(1, 2, 3, 4)
+    from([1, 2, 12, 13, 14,0, 15])
       .pipe(
-        double,
-        double
+        map((elem: number) => {
+          if (elem === 0) {
+            throw new Error('zero erreur')
+          }
+
+          return elem * 2;
+        }),
+        map(item => item - 2)
       )
-      .subscribe(console.log)
+      .subscribe(
+      (item: number) => console.log(`ma valeur ${item}`),
+      (err: unknown) => console.error(err),
+      () => console.log('Termine')
+    )
+
+
   }
 
 
