@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" [routerLink]="['']">{{ title }}</a>
+  <button class="navbar-toggler" type="button">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/home']">Acceuil</a>
+      </li>
+      <li
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a class="nav-link" [routerLink]="['/hotels']">Liste</a>
+      </li>
+      <li
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a class="nav-link" [routerLink]="['/hotels', '0', 'edit']"
+          >Ajout d'hotel
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="mt-5 container">
+  <router-outlet></router-outlet>
+</div>

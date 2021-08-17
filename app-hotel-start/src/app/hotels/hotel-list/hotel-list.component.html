@@ -1,0 +1,87 @@
+<div class="container">
+  <h2 *ngIf="hotels && hotels.length > 0">{{ title }}</h2>
+
+  <button class="btn btn-primary d-flex" (click)="toggleIsNewBadge()">
+    <span class="material-icons">
+      {{ showBadge ? "visibility_off" : "visibility" }}
+    </span>
+    <span class="ml-2"> {{ showBadge ? "Cacher" : "afficher" }} nouveau </span>
+  </button>
+  <hr />
+  <div class="my-2">
+    <div class="row">
+      <div class="col-md-4">
+        <span class="filter">Filtre actuel: </span>
+        <b>{{ hotelFilter }}</b>
+      </div>
+      <div class="col-md-8 form-group">
+        <input type="text" class="form-control" [(ngModel)]="hotelFilter" />
+        <!-- <input type="text" class="form-control" [ngModel]="hotelFilter" (ngModelChange)="hotelFilter = $event "> -->
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-primary" *ngIf="!!receivedRating">
+    {{ receivedRating }}
+  </div>
+  <div class="row row-cols-1 row-cols-md-3">
+    <div class="col mb-4" *ngFor="let hotel of filteredHotels">
+      <div class="card">
+        <img
+          [src]="hotel.imageUrl"
+          [title]="hotel.hotelName | uppercase"
+          class="card-img-top"
+          [alt]="hotel.hotelName"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{ hotel.hotelName | titlecase }}</h5>
+          <p class="card-text">
+            {{ hotel.description }}
+          </p>
+
+          <p class="card-text">
+            {{
+              hotel.price | currency: "EUR":"symbol":"1.2-2":"fr" | replaceComma
+            }}
+          </p>
+
+          <div class="d-flex justify-content-between align-items-baseline">
+            <app-star-rating
+              [rating]="hotel.rating"
+              (starRatingClicked)="receiveRatingClicked($event)"
+            ></app-star-rating>
+
+            <span
+              class="
+                material-icons
+                bg-primary
+                text-white
+                p-2
+                rounded-circle
+                btn
+              "
+              [routerLink]="['/hotels', hotel.id, 'edit']"
+            >
+              edit
+            </span>
+            <span
+              class="material-icons bg-info text-white p-2 rounded-circle btn"
+              [routerLink]="['/hotels', hotel.id]"
+            >
+              keyboard_arrow_right
+            </span>
+          </div>
+          <ng-container *ngFor="let tag of hotel.tags; let i = index">
+            <ng-container *ngIf="showBadge">
+              <span
+                class="badge badge-pill"
+                [ngClass]="i % 2 === 0 ? 'badge-info' : 'badge-success ml-2 mr-2'"
+              >
+                {{ tag }}
+              </span>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
