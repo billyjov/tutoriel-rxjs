@@ -6,11 +6,10 @@ import { HomeComponent } from './home/home.component';
 @NgModule({
   imports: [
     RouterModule.forRoot([
-      { path: 'home', component: HomeComponent },
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-
-      { path: '**', redirectTo: 'home', pathMatch: 'full' }
-    ]),
+    { path: 'home', component: HomeComponent },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: '**', redirectTo: 'home', pathMatch: 'full' }
+], { relativeLinkResolution: 'legacy' }),
   ]
 })
 export class AppRoutingModule { }
