@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
@@ -10,10 +10,9 @@ import { HotelListService } from '../shared/services/hotel-list.service';
   templateUrl: './hotel-detail.component.html',
   styleUrls: ['./hotel-detail.component.css']
 })
-export class HotelDetailComponent implements OnInit, OnDestroy {
+export class HotelDetailComponent implements OnInit {
 
-  public hotel: IHotel = <IHotel>{};
-  public subscriptions: Subscription = new Subscription();
+  public hotel$: Observable<IHotel> = of(<IHotel>{});
   constructor(
     private route: ActivatedRoute,
     private hotelService: HotelListService,
@@ -23,19 +22,11 @@ export class HotelDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const id: number = +this.route.snapshot.paramMap.get('id');
 
-    this.subscriptions.add(this.hotelService.getHotels()
+    this.hotel$ = this.hotelService.getHotels()
       .pipe(
-        map((hotels: IHotel[]) => hotels.find(hotel => hotel.id === id))
-      )
-      .subscribe((hotel: IHotel) => {
-        this.hotel = hotel;
-        console.log('hotel: ', this.hotel);
-      }));
-
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+        map((hotels: IHotel[]) => hotels.find(hotel => hotel.id === id)),
+        tap((hotel: IHotel) => console.log(hotel))
+      );
   }
 
   public backToList(): void {
