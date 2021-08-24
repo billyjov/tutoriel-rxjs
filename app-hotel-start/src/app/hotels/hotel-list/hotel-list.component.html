@@ -27,7 +27,7 @@
     {{ receivedRating }}
   </div>
   <div class="row row-cols-1 row-cols-md-3">
-    <div class="col mb-4" *ngFor="let hotel of filteredHotels">
+    <div class="col mb-4" *ngFor="let hotel of (filteredHotels$ | async) ">
       <div class="card">
         <img
           [src]="hotel.imageUrl"
