@@ -15,7 +15,14 @@
         <b>{{ hotelFilter }}</b>
       </div>
       <div class="col-md-8 form-group">
-        <input type="text" class="form-control" [(ngModel)]="hotelFilter" />
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="hotelFilter"
+          #searchInput
+          id="search-box"
+          (ngModelChange)="filterChanged($event)"
+        />
         <!-- <input type="text" class="form-control" [ngModel]="hotelFilter" (ngModelChange)="hotelFilter = $event "> -->
       </div>
     </div>
@@ -24,7 +31,7 @@
     {{ receivedRating }}
   </div>
   <div class="row row-cols-1 row-cols-md-3">
-    <div class="col mb-4" *ngFor="let hotel of filteredHotels">
+    <div class="col mb-4" *ngFor="let hotel of filteredHotels$ | async">
       <div class="card">
         <img
           [src]="hotel.imageUrl"
@@ -74,7 +81,9 @@
             <ng-container *ngIf="showBadge">
               <span
                 class="badge badge-pill"
-                [ngClass]="i % 2 === 0 ? 'badge-info' : 'badge-success ml-2 mr-2'"
+                [ngClass]="
+                  i % 2 === 0 ? 'badge-info' : 'badge-success ml-2 mr-2'
+                "
               >
                 {{ tag }}
               </span>
