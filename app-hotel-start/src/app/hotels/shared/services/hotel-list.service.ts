@@ -10,7 +10,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class HotelListService {
 
-  private readonly HOTEL_API_URL = 'api/hotelss';
+  private readonly HOTEL_API_URL = 'api/hotels';
 
   constructor(private http: HttpClient) {
 

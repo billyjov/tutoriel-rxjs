@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, EMPTY } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Hotel, IHotel } from '../shared/models/hotel';
+import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
 @Component({
@@ -32,22 +32,11 @@ export class HotelListComponent implements OnInit {
       catchError((err) => {
         this.errMsg = err
 
-        return of([]);
+        return EMPTY;
       })
     );
 
-    this.hotels$.subscribe({
-      next: val => console.log('hello', val)
-    })
     this.filteredHotels$ = this.hotels$;
-
-    // this.hotelListService.getHotels().subscribe({
-    //   next: hotels => {
-    //     this.hotels = hotels;
-    //     this.filteredHotels = this.hotels;
-    //   },
-    //   error: err => this.errMsg = err
-    // });
     this.hotelFilter = '';
   }
 
