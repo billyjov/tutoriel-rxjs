@@ -18,6 +18,14 @@ export class HotelListService {
 
   public getHotels(): Observable<IHotel[]> {
     return this.http.get<IHotel[]>(this.HOTEL_API_URL).pipe(
+      // map(elem => elem.price * 1.5)
+      map((hotels: IHotel[]) =>
+        hotels.map(hotel => ({
+          ...hotel,
+          price: hotel.price * 1.5,
+
+        }) as IHotel)
+      ),
       tap(hotels => console.log('hotels: ', hotels)),
       catchError(this.handleError)
     );
