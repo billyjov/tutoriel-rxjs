@@ -3,6 +3,7 @@ import { IHotel } from '../models/hotel';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
+import { Category } from '../models/category';
 
 
 @Injectable({
@@ -54,7 +55,7 @@ export class HotelListService {
   }
 
   public updateHotel(hotel: IHotel): Observable<IHotel> {
-    const url = `${this.HOTEL_API_URL}/${hotel.id}2222`;
+    const url = `${this.HOTEL_API_URL}/${hotel.id}`;
 
     return this.http.put<IHotel>(url, hotel).pipe(
       catchError(this.handleError)
@@ -78,6 +79,18 @@ export class HotelListService {
       rating: null,
       imageUrl: null
     };
+  }
+
+  public getCategories(): Observable<Category[]> {
+    return of([
+      {
+        id: 0,
+        name: 'Motel'
+      }, {
+        id: 1,
+        name: 'Auberge'
+      }
+    ])
   }
 
   private handleError(error: HttpErrorResponse) {
