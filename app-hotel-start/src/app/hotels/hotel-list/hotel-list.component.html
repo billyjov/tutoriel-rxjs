@@ -27,7 +27,7 @@
     {{ receivedRating }}
   </div>
   <div class="row row-cols-1 row-cols-md-3">
-    <div class="col mb-4" *ngFor="let hotel of (filteredHotels$ | async) ">
+    <div class="col mb-4" *ngFor="let hotel of filteredHotels$ | async">
       <div class="card">
         <img
           [src]="hotel.imageUrl"
@@ -36,7 +36,9 @@
           [alt]="hotel.hotelName"
         />
         <div class="card-body">
-          <h5 class="card-title">{{ hotel.hotelName | titlecase }}</h5>
+          <h5 class="card-title">
+            {{ hotel.hotelName | titlecase }} - {{ hotel.category }}
+          </h5>
           <p class="card-text">
             {{ hotel.description }}
           </p>
@@ -77,7 +79,9 @@
             <ng-container *ngIf="showBadge">
               <span
                 class="badge badge-pill"
-                [ngClass]="i % 2 === 0 ? 'badge-info' : 'badge-success ml-2 mr-2'"
+                [ngClass]="
+                  i % 2 === 0 ? 'badge-info' : 'badge-success ml-2 mr-2'
+                "
               >
                 {{ tag }}
               </span>
