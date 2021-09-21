@@ -41,6 +41,10 @@ export class HotelListComponent implements OnInit {
     this.hotelFilter = '';
   }
 
+  public filterChange(value: string): void {
+    console.log('value: ', value);
+  }
+
 
   public toggleIsNewBadge(): void {
     this.showBadge = !this.showBadge;
@@ -53,7 +57,6 @@ export class HotelListComponent implements OnInit {
   public set hotelFilter(filter: string) {
     this._hotelFilter = filter;
 
-    // Todo:
     if (this.hotelFilter) {
       this.filteredHotels$ = this.hotels$.pipe(
         map((hotels: IHotel[]) => this.filterHotels(filter, hotels))
@@ -61,7 +64,10 @@ export class HotelListComponent implements OnInit {
     } else {
       this.filteredHotels$ = this.hotels$;
     }
-    // this.filteredHotels = this.hotelFilter ? this.filterHotels(this.hotelFilter) : this.hotels;
+  }
+
+  public createFilterHotels(filter$: Observable<string>, hotels$: Observable<IHotel[]>): Observable<IHotel[]> {
+    return null;
   }
 
   public receiveRatingClicked(message: string): void {

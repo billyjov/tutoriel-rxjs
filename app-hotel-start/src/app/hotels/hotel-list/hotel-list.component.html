@@ -18,8 +18,12 @@
         <b>{{ hotelFilter }}</b>
       </div>
       <div class="col-md-8 form-group">
-        <input type="text" class="form-control" [(ngModel)]="hotelFilter" />
-        <!-- <input type="text" class="form-control" [ngModel]="hotelFilter" (ngModelChange)="hotelFilter = $event "> -->
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="hotelFilter"
+          (ngModelChange)="filterChange($event)"
+        />
       </div>
     </div>
   </div>
