@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, EMPTY } from 'rxjs';
+import { Observable, of, EMPTY, Subject, BehaviorSubject, combineLatest } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
@@ -19,6 +19,7 @@ export class HotelListComponent implements OnInit {
   private _hotelFilter = 'mot';
   public filteredHotels: IHotel[] = [];
   public filteredHotels$: Observable<IHotel[]> = of([]);
+  public filterSubject: Subject<string> = new BehaviorSubject<string>('');
   public receivedRating: string;
   public errMsg: string;
 
@@ -28,7 +29,6 @@ export class HotelListComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.hotels$ = this.hotelListService.hotelsWithCategories$.pipe(
       catchError((err) => {
         this.errMsg = err
@@ -37,12 +37,12 @@ export class HotelListComponent implements OnInit {
       })
     );
 
-    this.filteredHotels$ = this.hotels$;
+    this.filteredHotels$ = this.createFilterHotels(this.filterSubject, this.hotels$);
     this.hotelFilter = '';
   }
 
   public filterChange(value: string): void {
-    console.log('value: ', value);
+    this.filterSubject.next(value);
   }
 
 
@@ -57,17 +57,16 @@ export class HotelListComponent implements OnInit {
   public set hotelFilter(filter: string) {
     this._hotelFilter = filter;
 
-    if (this.hotelFilter) {
-      this.filteredHotels$ = this.hotels$.pipe(
-        map((hotels: IHotel[]) => this.filterHotels(filter, hotels))
-      )
-    } else {
-      this.filteredHotels$ = this.hotels$;
-    }
   }
 
   public createFilterHotels(filter$: Observable<string>, hotels$: Observable<IHotel[]>): Observable<IHotel[]> {
-    return null;
+    return combineLatest(hotels$, filter$, (hotels: IHotel[], filter: string) => {
+      if(filter === '') return hotels;
+
+      return hotels.filter(
+        (hotel: IHotel) => hotel.hotelName.toLocaleLowerCase().indexOf(filter) !== -1
+      );
+    });
   }
 
   public receiveRatingClicked(message: string): void {
