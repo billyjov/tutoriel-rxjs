@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, of, EMPTY, Subject, BehaviorSubject, combineLatest } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
 @Component({
   selector: 'app-hotel-list',
   templateUrl: './hotel-list.component.html',
-  styleUrls: ['./hotel-list.component.css']
+  styleUrls: ['./hotel-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HotelListComponent implements OnInit {
   public title = 'Liste hotels';
@@ -22,6 +23,8 @@ export class HotelListComponent implements OnInit {
   public filterSubject: Subject<string> = new BehaviorSubject<string>('');
   public receivedRating: string;
   public errMsg: string;
+  private errMsgSubject: Subject<string> = new Subject<string>();
+  public errMsg$ = this.errMsgSubject.asObservable();
 
 
   constructor(private hotelListService: HotelListService) {
@@ -31,7 +34,8 @@ export class HotelListComponent implements OnInit {
   ngOnInit() {
     this.hotels$ = this.hotelListService.hotelsWithCategories$.pipe(
       catchError((err) => {
-        this.errMsg = err
+        // this.errMsg = err
+        this.errMsgSubject.next(err);
 
         return EMPTY;
       })
@@ -61,7 +65,7 @@ export class HotelListComponent implements OnInit {
 
   public createFilterHotels(filter$: Observable<string>, hotels$: Observable<IHotel[]>): Observable<IHotel[]> {
     return combineLatest(hotels$, filter$, (hotels: IHotel[], filter: string) => {
-      if(filter === '') return hotels;
+      if (filter === '') return hotels;
 
       return hotels.filter(
         (hotel: IHotel) => hotel.hotelName.toLocaleLowerCase().indexOf(filter) !== -1

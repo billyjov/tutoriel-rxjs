@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="alert alert-danger" *ngIf="errMsg">
+  <div class="alert alert-danger" *ngIf="errMsg$ | async as errMsg ">
     {{ errMsg }}
   </div>
   <h2 *ngIf="hotels && hotels.length > 0">{{ title }}</h2>
