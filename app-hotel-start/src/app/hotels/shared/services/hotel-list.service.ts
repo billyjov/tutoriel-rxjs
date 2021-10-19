@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { IHotel } from '../models/hotel';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of, combineLatest } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, shareReplay, tap } from 'rxjs/operators';
 import { Category } from '../models/category';
 
 
@@ -24,7 +24,8 @@ export class HotelListService {
           price: hotel.price * 1.5,
           category: categories.find(category => category.id === hotel.categoryId)?.name
         }) as IHotel)
-      )
+      ),
+      shareReplay(1)
     );
 
   constructor(private http: HttpClient) {
