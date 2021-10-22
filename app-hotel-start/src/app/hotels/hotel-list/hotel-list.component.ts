@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, of, EMPTY, Subject, BehaviorSubject, combineLatest, interval, merge } from 'rxjs';
-import { catchError, map, shareReplay, take, tap } from 'rxjs/operators';
+import { catchError, map, shareReplay, take, tap, scan, reduce } from 'rxjs/operators';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
@@ -32,16 +32,10 @@ export class HotelListComponent implements OnInit {
 
   ngOnInit() {
 
-    const a = interval(1000).pipe(
-      tap((valeur) => console.log('a: ', valeur)),
-      take(3)
-    );
-    const b = interval(1000).pipe(
-      tap((valeur) => console.log('b: ', valeur)),
-      take(3)
-    );
+    of(1, 2, 3, 4, 5).pipe(
+      reduce((acc, value) => [value,...acc], [0])
+    ).subscribe(console.log)
 
-    merge(a, b).subscribe(console.log);
 
     this.hotels$ = this.hotelListService.hotelsWithCategories$.pipe(
       catchError((err) => {
