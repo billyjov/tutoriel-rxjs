@@ -35,8 +35,13 @@ export class HotelListService {
     this.hotelInserted$
   ).pipe(
     scan((acc: IHotel[], value: IHotel) => {
+      const index = acc.findIndex((hotel) => hotel.id === value.id);
+      if (index !== -1) {
+        acc[index] = value;
+        return acc;
+      }
 
-      return [...acc, value]
+      return [...acc, value];
     }),
     shareReplay(1)
   )
@@ -45,8 +50,7 @@ export class HotelListService {
 
   }
 
-  public addHotel(newHotel: IHotel): void {
-    newHotel = this.transformHotel(newHotel);
+  public addOrUpdateHotel(newHotel: IHotel): void {
     this.hotelInsertedSubject.next(newHotel);
   }
 
