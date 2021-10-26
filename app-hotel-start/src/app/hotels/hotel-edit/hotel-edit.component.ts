@@ -142,6 +142,7 @@ export class HotelEditComponent implements OnInit, AfterViewInit {
         };
 
         if (hotel.id === 0) {
+          this.hotelService.addHotel(hotel);
           this.hotelService.createHotel(hotel).subscribe({
             next: () => this.saveCompleted(),
             error: (err) => this.errorMessage = err
