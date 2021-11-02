@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, of, EMPTY, Subject, BehaviorSubject, combineLatest, interval, merge } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeAll } from 'rxjs/operators';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
@@ -35,15 +35,19 @@ export class HotelListComponent implements OnInit {
   }
 
   ngOnInit() {
-    of(1, 2, 3)
+    const hotelTest$ = of(1, 2, 3)
       .pipe(
-        map(val => this.http.get<any>(`api/hotels/${val}`))
-      )
-      .subscribe((elem) => {
-        elem.subscribe(value => {
-          console.log('hello: ', value);
-        })
-      });
+        map(val => this.http.get<IHotel>(`api/hotels/${val}`)),
+        mergeAll()
+      );
+
+
+    hotelTest$.subscribe((elem) => {
+      console.log('hello: ', elem);
+      // elem.subscribe(value => {
+      //   console.log('hello: ', value);
+      // })
+    });
 
     this.hotels$ = this.hotelListService.hotelsWithAdd$.pipe(
       catchError((err) => {
