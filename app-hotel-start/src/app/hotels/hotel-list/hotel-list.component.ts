@@ -1,6 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, of, EMPTY, Subject, BehaviorSubject, combineLatest, interval, merge } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
@@ -26,11 +27,24 @@ export class HotelListComponent implements OnInit {
   private errMsgSubject: Subject<string> = new Subject<string>();
   public errMsg$ = this.errMsgSubject.asObservable();
 
-  constructor(private hotelListService: HotelListService) {
+  constructor(
+    private hotelListService: HotelListService,
+    private http: HttpClient
+  ) {
 
   }
 
   ngOnInit() {
+    of(1, 2, 3)
+      .pipe(
+        map(val => this.http.get<any>(`api/hotels/${val}`))
+      )
+      .subscribe((elem) => {
+        elem.subscribe(value => {
+          console.log('hello: ', value);
+        })
+      });
+
     this.hotels$ = this.hotelListService.hotelsWithAdd$.pipe(
       catchError((err) => {
         this.errMsgSubject.next(err);
