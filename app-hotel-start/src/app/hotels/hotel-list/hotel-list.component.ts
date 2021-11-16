@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Observable, of, EMPTY, Subject, BehaviorSubject, combineLatest, interval, merge } from 'rxjs';
-import { catchError, map, mergeAll } from 'rxjs/operators';
+import { Observable, of, EMPTY, Subject, BehaviorSubject, combineLatest, interval, merge, concat } from 'rxjs';
+import { catchError, concatMap, map, mergeAll, mergeMap, take } from 'rxjs/operators';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
@@ -37,8 +37,7 @@ export class HotelListComponent implements OnInit {
   ngOnInit() {
     const hotelTest$ = of(1, 2, 3)
       .pipe(
-        map(val => this.http.get<IHotel>(`api/hotels/${val}`)),
-        mergeAll()
+        mergeMap(val => this.http.get<IHotel>(`api/hotels/${val}`))
       );
 
 
@@ -48,6 +47,30 @@ export class HotelListComponent implements OnInit {
       //   console.log('hello: ', value);
       // })
     });
+    const hotelTest1$ = of(1, 2, 3)
+      .pipe(
+        concatMap(val => this.http.get<IHotel>(`api/hotels/${val}`))
+      );
+
+
+
+    hotelTest1$.subscribe((elem) => {
+      console.log('COncatMap: ', elem);
+      // elem.subscribe(value => {
+      //   console.log('hello: ', value);
+      // })
+    });
+    // const obs1$ = interval(1000).pipe(
+    //   take(3),
+    //   map((val) => 'A ' + val)
+    // );
+    // const obs2$ = interval(1000).pipe(
+    //   take(3),
+    //   map((val) => 'B ' + val)
+    // );
+
+    // merge(obs1$, obs2$).subscribe(val => console.log('Merge: ', val));
+    // concat(obs1$, obs2$).subscribe(val => console.warn('Concat: ', val));
 
     this.hotels$ = this.hotelListService.hotelsWithAdd$.pipe(
       catchError((err) => {
