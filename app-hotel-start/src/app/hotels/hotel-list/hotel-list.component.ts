@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, of, EMPTY, Subject, BehaviorSubject, combineLatest, interval, merge, concat } from 'rxjs';
-import { catchError, concatMap, map, mergeAll, mergeMap, take } from 'rxjs/operators';
+import { catchError, concatMap, mergeMap, switchMap } from 'rxjs/operators';
 import { IHotel } from '../shared/models/hotel';
 import { HotelListService } from '../shared/services/hotel-list.service';
 
@@ -43,22 +43,24 @@ export class HotelListComponent implements OnInit {
 
     hotelTest$.subscribe((elem) => {
       console.log('hello: ', elem);
-      // elem.subscribe(value => {
-      //   console.log('hello: ', value);
-      // })
     });
     const hotelTest1$ = of(1, 2, 3)
       .pipe(
         concatMap(val => this.http.get<IHotel>(`api/hotels/${val}`))
       );
 
-
-
     hotelTest1$.subscribe((elem) => {
       console.log('COncatMap: ', elem);
-      // elem.subscribe(value => {
-      //   console.log('hello: ', value);
-      // })
+    });
+
+
+    const hotelTest2$ = of(1, 2, 3)
+      .pipe(
+        switchMap(val => this.http.get<IHotel>(`api/hotels/${val}`))
+      );
+
+    hotelTest2$.subscribe((elem) => {
+      console.warn('SwitchMap: ', elem);
     });
     // const obs1$ = interval(1000).pipe(
     //   take(3),
